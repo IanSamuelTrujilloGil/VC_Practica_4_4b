@@ -1,7 +1,7 @@
 # Práctica 4 y 4b: Prototipo de detección de matrículas, coches y personas
 
 
-# Práctica 4
+## Práctica 4
 ## Requisitos de ejecución
 Para ejecutar el cuaderno correctamente, necesitas tener lo siguiente:
 - Python  
@@ -22,13 +22,13 @@ Para ejecutar el cuaderno correctamente, necesitas tener lo siguiente:
   - OCR Pytesseract y SmolVLM  
 Con esto, ya tienes todo lo que hace falta para ejecutar el cuaderno.
 
-## Lista y descripción de tareas realizadas 
+### Lista y descripción de tareas realizadas 
 
-### Objetivo
+#### Objetivo
 El objetivo es preparar un prototipo que procese vídeos y detecte personas, coches y matrículas con su correspondiente texto, volcando el resultado en un vídeo y anotaciones en un fichero csv.
 
 
-### Elaboración de un dataset de matrículas
+#### Elaboración de un dataset de matrículas
 Para empezar, se ha creado un dataset de matrículas de coches. Para ello, entre distintos estudiantes de la asignatura se creó una carpeta compartida en la cual fuimos subiendo las imágenes.
 
 Posteriormente, descargamos todas las imágenes y las renombramos usando un script de PowerShell que usa un hash para nombrar la imagen, para que cada una tuviese un nombre único. Tras esto, procedimos mediante un script de PowerShell a separar nuestro dataset en tres conjuntos: train con un 80% de las imágenes y validation y test con un 10% cada una.
@@ -37,10 +37,10 @@ Tras esto, se procedió a realizar el etiquetado de todas las imágenes con el p
 
 Finalmente, para pasar las anotaciones del formato Labelme a YOLO, usamos otro script de Python.
 
-### Entrenamiendo de un modelo capaz de detectar matrículas en imagenes
+#### Entrenamiendo de un modelo capaz de detectar matrículas en imagenes
 Posteriormente, se hicieron diversos entrenamientos hasta que conseguimos el detector de matrículas que se usa en la práctica. El código de entrenamiento que se muestra en el cuaderno muestra la configuración con la que conseguimos el modelo que estamos utilizando.
 
-### Implementación del prototipo
+#### Implementación del prototipo
 El prototipo a implementar debe cumplir las siguientes especificaciones:
 
 - Detecte y siga a las personas y vehículos presentes.
@@ -55,16 +55,26 @@ Para ello, y utilizando el modelo YOLO11n, que incluye detector y tracker de per
 
 Finalmente, para realizar la cuenta, lo que se hace es leer los ficheros CSV generados y se discrimina primero entre si son personas o vehículos, y se añaden sus identificadores al conjunto correspondiente. Como estos no admiten duplicados, el tamaño del conjunto será equivalente a la cuenta. 
 
-# Conclusiones
+#### Conclusiones
 Hay que tener en cuenta que el tracker no es perfecto, y que puede asignarle un identificador nuevo a un objeto que ya había aparecido en el vídeo, por ejemplo, cuando otro lo cubre, como pasa en el vídeo de ejemplo cuando pasa un coche en circulación por delante de los coches estacionados.
 Nuestro modelo, detecta mejor las matrículas cuanto más cerca están de la cámara. Probablemente debido a que es más fácil obtener imagenes de coches estacionados que en circulación. 
 
 En la siguiente carpeta compartida se puede ver el prototipo en funcionamiento sobre el vídeo de prueba proporcionado. Están todas las
-versiones, tanto el que se genera con pytesseract como con SmolVLM [Carpeta compartida](https://alumnosulpgc-my.sharepoint.com/personal/ian_trujillo102_alu_ulpgc_es/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fian%5Ftrujillo102%5Falu%5Fulpgc%5Fes%2FDocuments%2FVC%5FP4%5FP4B&ga=1)
+versiones, tanto el que se genera con pytesseract como con SmolVLM [Carpeta compartida](https://drive.google.com/drive/u/1/folders/1A9bAFEXjTL0uQNPBMKWiG5_bhnBCeSlE)
 
 Los siguientes ficheros _.csv_ contienen las anotaciones pertinentes para la entrega de la práctica
 - Usando como OCR Pytesseract: `./detecciones_pytesseract.csv`
 - Usando como OCR SmolVLM: `./detecciones_SmolVLM.csv`
+
+Respecto al modelo la siguiente figura muestra resultados del entrenamiento. 
+
+![Resultados del entrenamiento](/runs/detect/train/results.png)   
+
+Como se puede apreciar, el modelo ha dado bastante buen resultado. Destacan tanto una _precision_ como un _recall_ bastante alto, superiores al 90%, lo que nos indica que ha las mayoría de las predicciones son correctas y que acierta la gran parte de las muestras que se le proporcionan. Asímismo si nos fijamos los valores del _mean average precision_ vemos que son bastante altos incluso para la que tiene un umbral del 95%, lo que nos indica que además hace bastantes detecciones bastante precisas.
+Por otro lado si nos fijamos en los valores de pérdidas tanto para _train_ como para _val_ vemos que tienen unas curvas muy similares, lo que nos hace pensar que no hay _overfitting_ y que se podría seguir entrenando durante más épocas. 
+
+#### Extras
+Hemos implementado el extra de anonimizar a las personas y vehículos presentes en un vídeo, para ello lo que se hace es en la región de interés de los objetos detectados por el modelo Yolo (coches y personas) se les aplica un Gaussian Blur. 
 
 ## Práctica 4B
 
@@ -114,6 +124,7 @@ Los resultados muestran que el modelo SmolVLM logra una mayor precisión en el r
 ## Autoría
    - Tycho Quintana Santana.
    - Ian Samuel Trujillo Gil.
+
 ## Uso de IA
 Apoyo para la generación de los dos scripts de PowerShell
 
